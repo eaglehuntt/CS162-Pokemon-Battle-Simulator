@@ -11,9 +11,10 @@ class IncorrectNatureError(Exception):
 
 class Pokemon:
 
-    def __init__(self, pokedex_number, nature="random"):
+    def __init__(self, pokedex_number, nature="random", level=50):
         self.data = self._get_data(pokedex_number)
-        self.level = 50
+        self.name = self.data["name"].upper()
+        self.level = level
         self.type = self._get_type()
 
         # (name, (increased stat, decreased stat))
@@ -23,6 +24,7 @@ class Pokemon:
         self.ivs = self._get_ivs()
         self.evs = self._get_evs()
         self.total_stats = self._get_total_stats()
+        self.moves = self._get_moves()
 
     def _get_data(self, pokedex_number):
         pokemon_data = rq.get(
@@ -127,10 +129,6 @@ class Pokemon:
         return evs
 
     def _get_total_stats(self):
-        print(f"IVs: {self.ivs}")
-        print(f"EVs: {self.evs}")
-        print(f"Base Stats: {self.base_stats}")
-        print(f"Nature: {self.nature_name}")
 
         # Calculation based on Generation III onward formula.
         # https://pokemon.fandom.com/wiki/Statistics#
@@ -149,14 +147,12 @@ class Pokemon:
                 stats["hp"] = hp_stat
             else:
                 other_stat = math.floor((((2 * base_stat + iv + (ev // 4)) *
-                                          level // 100) + 5) * self.nature_multiplier(stat))
+                                          level // 100) + 5) * self._nature_multiplier(stat))
                 stats[stat] = other_stat
-
-        print(stats)
 
         return stats
 
-    def nature_multiplier(self, stat):
+    def _nature_multiplier(self, stat):
         increased_stat, decreased_stat = self.nature_effects
 
         if stat == increased_stat:
@@ -166,5 +162,21 @@ class Pokemon:
         else:
             return 1.0
 
+    def _get_moves(self):
+        possible_moves = self.data["moves"]
 
-pkm = Pokemon(1)
+        moves = []
+
+        for i in range(4):
+            selected_move = random.choice(possible_moves)["move"]
+            move_data = rq.get(selected_move["url"]).json()
+
+            moves.append({
+                "name": selected_move["name"],
+                "accuracy": move_data["accuracy"],
+                "damage_class": move_data["damage_class"]["name"],
+                "power": move_data["power"],
+                "pp": move_data["pp"],
+                "priority": move_data["priority"],
+                "stat_changes": move_data["stat_changes"]
+            })
