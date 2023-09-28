@@ -71,11 +71,11 @@ class Pokemon:
             base_stats[stat_object["stat"]["name"]] = stat_object["base_stat"]
 
         # apply nature to stats
-        nature_effect = self.nature[1]
+        nature_effect = self.nature[1]  # (increased stat, decreased stat)
+        base_stats[nature_effect[0]] += 10  # increase
+        base_stats[nature_effect[1]] -= 10  # decrease
 
         return base_stats
 
 
 pkm = Pokemon(1)
-
-print(pkm.stats)
