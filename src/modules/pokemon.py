@@ -26,6 +26,17 @@ class Pokemon:
         self.total_stats = self._get_total_stats()
         self.moves = self._get_moves()
 
+    def __str__(self):
+        return f"Pokemon: {self.name}\n" \
+               f"Level: {self.level}\n" \
+               f"Type: {', '.join(self.type)}\n" \
+               f"Nature: {self.nature_name}\n" \
+               f"Base Stats: {self.base_stats}\n" \
+               f"IVs: {self.ivs}\n" \
+               f"EVs: {self.evs}\n" \
+               f"Total Stats: {self.total_stats}\n" \
+               f"Moves: {self.moves}"
+
     def _get_data(self, pokedex_number):
         pokemon_data = rq.get(
             f"https://pokeapi.co/api/v2/pokemon/{pokedex_number}").json()
@@ -180,3 +191,5 @@ class Pokemon:
                 "priority": move_data["priority"],
                 "stat_changes": move_data["stat_changes"]
             })
+
+        return moves
