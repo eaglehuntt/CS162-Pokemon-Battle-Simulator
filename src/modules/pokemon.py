@@ -1,7 +1,7 @@
 import requests as rq
 import random
 import math
-
+# import player
 # test: https://pycosites.com/pkmn/stat.php
 
 
@@ -14,17 +14,19 @@ class Pokemon:
     def __init__(self, pokedex_number, nature="random", level=50):
         self.data = self._get_data(pokedex_number)
         self.name = self.data["name"].upper()
-        self.level = level
+        self.fainted = False  # flag for if switching out is legal
         self.type = self._get_type()
 
+        # Information used for stat calculations.
         # (name, (increased stat, decreased stat))
+        self.level = level
         self.nature_name, self.nature_effects = self._get_nature(nature)
-
         self.base_stats = self._get_base_stats()
         self.ivs = self._get_ivs()
         self.evs = self._get_evs()
         self.total_stats = self._get_total_stats()
         self.moves = self._get_moves()
+        self.hp = self.total_stats["hp"]
 
     def __str__(self):
         return f"Pokemon: {self.name}\n" \
@@ -193,3 +195,18 @@ class Pokemon:
             })
 
         return moves
+
+    def _process_pokemon(self, pokemon):
+        if not isinstance(pokemon, Pokemon):
+            raise TypeError("Pokemon must be an instance of the Pokemon class")
+        else:
+            return True
+
+    def _take_damage(self, damage):
+        self.hp -= damage
+
+        if self.hp <= 0:
+            self.fainted = True
+
+    """ def attack(self, target, move):
+        if self._process_pokemon(target): """

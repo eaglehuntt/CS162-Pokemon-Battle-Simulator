@@ -12,7 +12,7 @@ class Player:
         self.active_pokemon = self.team[0]
 
     def _get_team(self, team):
-        if team == []:
+        if team == []:  # randomize team if empty
             for i in range(6):
                 selected_pokemon = self._choose_pokemon()
                 team.append(pokemon.Pokemon(selected_pokemon))
@@ -22,7 +22,7 @@ class Player:
         available_pokemon = 807
 
         if pokedex_number == 0:
-            return random.randint(1, 807)
+            return random.randint(1, available_pokemon)
         else:
             try:
                 return pokedex_number
@@ -32,7 +32,11 @@ class Player:
 
     def switch_active_pokemon(self, index):
         try:
-            self.active_pokemon = self.team[index]
+            if not self.team[index].fainted:
+                self.active_pokemon = self.team[index]
+            else:
+                print("You cannot switch feinted Pokemon into battle!")
+
         except ValueError:
             print("Error: Enter [0-5]")
         except IndexError:
