@@ -2,7 +2,6 @@ import requests as rq
 import random
 import math
 # import player
-# test: https://pycosites.com/pkmn/stat.php
 
 
 class IncorrectNatureError(Exception):

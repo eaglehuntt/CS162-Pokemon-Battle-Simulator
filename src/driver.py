@@ -1,6 +1,25 @@
 from modules.pokemon import Pokemon
 
-# Define the main menu function
+"""
+Required modules: requests
+
+pip install requests
+
+----------------------
+
+
+Tests:
+
+Manually test that the stats are being calculated correctly:
+https://pycosites.com/pkmn/stat.php
+
+Manually test that if a user tries to view pokemon before they have created one
+
+Manually test that if a user inputs a string program will catch it
+
+Manually test that a user cannot input a number larger than 800
+
+"""
 
 
 def main_menu():
@@ -15,8 +34,18 @@ def main_menu():
         choice = input("Enter your choice: ")
 
         if choice == "1":
-            pokedex_number = int(
-                input("Enter the Pokedex number of the Pokemon: "))
+            while True:
+                try:
+                    pokedex_number = int(
+                        input("Enter the Pokedex number of the Pokemon (1-800): "))
+                    if 1 <= pokedex_number <= 800:
+                        break  # Valid input, exit the loop
+                    else:
+                        print(
+                            "Invalid Pokedex number. Please enter a number between 1 and 800.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid number.")
+
             level = int(input("Enter the level of the Pokemon: "))
 
             # Create a new Pokemon object
